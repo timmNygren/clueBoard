@@ -1,0 +1,312 @@
+package clueGame;
+import java.io.*;
+import java.util.*;
+
+import clueGame.RoomCell.DoorDirection;
+
+
+public class Board {
+	private ArrayList<BoardCell> cells;
+	private Map<Character, String> rooms;
+	private int [][] grid;		//contain indices 
+	private BoardCell [][] board;		//contain room symbols
+	private int numRows=0;
+	private int numColumns=0;
+	private Map<Integer, LinkedList<Integer>> adjMtx;
+	private Set<BoardCell> targets;
+	private Set<Integer> targetsInt;
+	private ArrayList<Integer> seen = new ArrayList<Integer>();
+	
+	public Board() {
+		adjMtx = new TreeMap<Integer, LinkedList<Integer>>();
+	}
+	
+	public void loadConfigFiles(String boardFile, String legendFile) throws FileNotFoundException, BadConfigFormatException {
+
+		loadLegend(legendFile);
+		getRowCol(boardFile);
+		loadBoard(boardFile);
+		fillGrid();
+	}
+	
+	public void loadLegend(String inputFile) throws FileNotFoundException, BadConfigFormatException {
+		rooms = new TreeMap<Character, String>();
+		FileReader reader = new FileReader(inputFile);
+		Scanner in = new Scanner(reader);
+		
+		while (in.hasNextLine()) {
+			String[] line = in.nextLine().split("\\, ");
+			if (line.length != 2) {
+				throw new BadConfigFormatException(inputFile);
+			}
+			rooms.put(line[0].charAt(0), line[1]);
+		}
+		
+//		Set<Character> keySet = rooms.keySet();
+//		for (Character key : keySet)
+//			System.out.println(key + " && " + rooms.get(key));
+		
+		in.close();
+	}
+	
+	public void loadBoard(String inputFile) throws FileNotFoundException, BadConfigFormatException {
+		FileReader reader = new FileReader(inputFile);
+		Scanner in = new Scanner(reader);
+		cells = new ArrayList<BoardCell>();
+		
+		board = new BoardCell[numRows+2][numColumns+2];
+		int rows = 1;
+		while (in.hasNextLine()) {
+			int cols = 1;
+			String[] line = in.nextLine().split("\\,");
+			
+			if (line.length != numColumns) {
+				throw new BadConfigFormatException(inputFile);
+			}
+				
+			for (String x : line) {
+				if (!rooms.containsKey(x.charAt(0))) {
+					throw new BadConfigFormatException(inputFile);
+				}
+				if (x.equalsIgnoreCase("w")) {
+					WalkwayCell wCell = new WalkwayCell();
+					cells.add(wCell);
+					
+					
+					board[rows][cols] = wCell;
+				} else {
+					RoomCell rCell = new RoomCell(x + " ");
+					cells.add(rCell);
+					
+					board[rows][cols] = rCell;
+					
+				}
+				
+				//board[rows][cols] = x;					//extra optional array for keepers
+				
+				cols++;
+			}
+			rows++;
+		}
+		in.close();
+		// Z border padding
+		for (int i = 0; i < numRows+2; i++) {
+			for (int j = 0; j < numColumns+2; j++) {
+				//top border
+				if (i == 0)
+					board[i][j] = new RoomCell("Z ");
+				//left border
+				else if (j == 0)
+					board[i][j] = new RoomCell("Z ");
+				//bottom border
+				else if (i == numRows+1)
+					board[i][j] = new RoomCell("Z ");
+				//right border
+				else if (j == numColumns+1)
+					board[i][j] = new RoomCell("Z ");
+			}
+		}
+	}
+	
+	public void printBoard() {
+		for (int i = 0; i < board.length; i++) {
+			for (int j = 0; j < board[i].length; j++) {
+				board[i][j].draw();
+			}
+			System.out.println("");
+		}
+	}
+	
+	public void getRowCol(String inputFile) throws FileNotFoundException, BadConfigFormatException{
+		int most = 0, previous = 0;
+		FileReader reader = new FileReader(inputFile);
+		Scanner in = new Scanner(reader);
+		while (in.hasNextLine()) {
+			String[] line = in.nextLine().split("\\,");
+			if (previous != 0 && line.length != previous) {
+				throw new BadConfigFormatException(inputFile);
+			}
+			numColumns = line.length;
+			numRows++;
+			previous = line.length;
+		}			
+		in.close();
+	}
+	
+	public void fillGrid() {
+		grid = new int [numRows][numColumns];
+		int x = 0;
+		for (int i = 0; i < numRows; i++) {
+			for (int j = 0; j < numColumns; j++) {
+				grid[i][j] = x;
+				x++;
+			}			
+		}
+	}
+	
+	public int calcIndex(int rowNum, int columnNum) {
+		return grid[rowNum][columnNum];
+	}
+	
+	public RoomCell getRoomCellAt(int row, int col) {
+
+		return (RoomCell) board[row+1][col+1];
+	}
+
+	//GETTERS
+	public BoardCell getCellAt(int i) {
+		return cells.get(i);
+	}
+
+	public Map<Character, String> getRooms() {		
+		return rooms;
+	}
+
+	public int getNumRows() {
+		return numRows;
+	}
+
+	public int getNumColumns() {
+		return numColumns;
+	}
+
+	
+	public void calcAdjacencies() {
+		int x = 0;
+		for (int i = 1; i < numRows+1; i++) {	
+			
+			for (int j = 1; j < numColumns+1; j++) {
+				LinkedList<Integer> list = new LinkedList<Integer>();
+
+				if (board[i][j].isDoorWay()) {
+					RoomCell p =(RoomCell) board[i][j];
+					if (p.getDoorDirection() == DoorDirection.UP)
+						list.add(grid[i-2][j-1]);
+					if (p.getDoorDirection() == DoorDirection.RIGHT)
+						list.add(grid[i-1][j]);
+					if (p.getDoorDirection() == DoorDirection.DOWN)
+						list.add(grid[i][j-1]);
+					if (p.getDoorDirection() == DoorDirection.LEFT)
+						list.add(grid[i-1][j-2]);	
+					
+		
+				} else if (!board[i][j].isRoom()) {		
+					// check above
+					if (board[i-1][j].isDoorWay()) {
+						RoomCell p = (RoomCell) board[i-1][j];
+						if (p.getDoorDirection() == DoorDirection.DOWN)
+							list.add(grid[i-2][j-1]);
+					} else if (board[i-1][j].isWalkway())
+						list.add(grid[i-2][j-1]);
+					// check right
+					if (board[i][j+1].isDoorWay()) {
+						RoomCell p = (RoomCell) board[i][j+1];
+						if (p.getDoorDirection() == DoorDirection.LEFT)
+							list.add(grid[i-1][j]);
+					} else if (board[i][j+1].isWalkway())
+						list.add(grid[i-1][j]);
+					//check below
+					if (board[i+1][j].isDoorWay()) {
+						RoomCell p = (RoomCell) board[i+1][j];
+						if (p.getDoorDirection() == DoorDirection.UP)
+							list.add(grid[i][j-1]);
+					} else if (board[i+1][j].isWalkway())
+						list.add(grid[i][j-1]);
+					//check left
+					if (board[i][j-1].isDoorWay()) {
+						RoomCell p = (RoomCell) board[i][j-1];
+						if (p.getDoorDirection() == DoorDirection.RIGHT)
+							list.add(grid[i-1][j-2]);
+					} else if (board[i][j-1].isWalkway())
+						list.add(grid[i-1][j-2]);
+					
+				}	
+				adjMtx.put(x, list);	
+				x++;
+			}
+			
+		}
+	}
+	
+
+	public void printAdj() {
+		Set<Integer> keySet = adjMtx.keySet();
+		for (Integer key : keySet)
+			System.out.println(key + " && " + adjMtx.get(key));
+	}
+	
+	public LinkedList<Integer> getAdjList(int i) {
+		return adjMtx.get(i);
+	}
+	
+	public void setSeen(int index) {
+		seen.clear();
+		seen.add(index);
+	}
+	
+	
+	//resets the target list, calls bridge function, removes the starting grid cell if present
+	public void calcTargets(int start, int steps) {
+		targets = new HashSet<BoardCell>();
+		targetsInt = new TreeSet<Integer>();
+		bridge(start, steps, start, -1, steps);
+		if (targets.contains(getCellAt(start))){
+			targets.remove(getCellAt(start));
+		}
+		for (Integer key: targetsInt)
+			targets.add(getCellAt(key));
+		
+	}
+	
+	public void bridge(int start, int steps, int begin, int prev, int intSteps) {
+		for (int a = 0; a < adjMtx.get(start).size(); a++) {
+			if (steps == intSteps-1) {
+				setSeen(begin);
+			}
+			if (!(seen.contains(start))){
+				if (steps == 0) {
+					targets.add(getCellAt(start));
+					return;
+				}			
+				if (getCellAt(start).isDoorWay())
+					targets.add(getCellAt(start));
+				seen.add(start);
+				bridge(adjMtx.get(start).get(a), steps-1, begin, start, intSteps);	
+				seen.remove(seen.size() - 1);
+				
+			}			
+		}		
+	}
+	
+	public void printTargets() {
+		for (Integer key : targetsInt)
+			System.out.println(key);
+		for (BoardCell key : targets)
+			key.draw();
+	}
+
+	public Set<BoardCell> getTargets() {
+		
+		return targets;
+	}
+	
+	public static void main(String[] args) throws FileNotFoundException, BadConfigFormatException {
+		Board board = new Board();
+		
+		board.loadConfigFiles("clueboard.csv", "Legend.txt");
+		//board.printBoard();
+		System.out.println(board.numRows + ", " + board.numColumns);
+		board.calcAdjacencies();
+		board.calcTargets(board.calcIndex(19, 6), 4);
+		board.printTargets();
+		Set<BoardCell> gogo = board.getTargets();
+		System.out.println();
+		System.out.println(board.calcIndex(6, 0));
+		
+		
+//		for (int i = 0; i < 460; i++) {
+//			if (gogo.contains(board.getCellAt(i))) 
+//				System.out.println("WE HAVE A WINNER!@ " + i);
+//		}
+	}
+}
