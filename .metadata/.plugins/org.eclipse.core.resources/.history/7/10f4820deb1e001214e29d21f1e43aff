@@ -1,0 +1,16 @@
+package clueGame;
+
+import java.util.ArrayList;
+
+public class ComputerPlayer extends Player {
+	private ArrayList<Integer/*targets*/> locations;
+	
+	public ComputerPlayer() {
+		super();
+	}
+	
+	public void pickLocation() {
+		//stub
+	}
+
+}

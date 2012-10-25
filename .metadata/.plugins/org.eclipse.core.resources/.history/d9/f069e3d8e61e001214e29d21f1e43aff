@@ -118,7 +118,7 @@ public class Board {
 	}
 	
 	public void getRowCol(String inputFile) throws FileNotFoundException, BadConfigFormatException{
-		int previous = 0;
+		int most = 0, previous = 0;
 		FileReader reader = new FileReader(inputFile);
 		Scanner in = new Scanner(reader);
 		while (in.hasNextLine()) {

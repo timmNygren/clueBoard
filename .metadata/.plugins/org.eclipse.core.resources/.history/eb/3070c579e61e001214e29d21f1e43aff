@@ -118,7 +118,7 @@ public class Board {
 	}
 	
 	public void getRowCol(String inputFile) throws FileNotFoundException, BadConfigFormatException{
-		int previous = 0;
+		int most = 0, previous = 0;
 		FileReader reader = new FileReader(inputFile);
 		Scanner in = new Scanner(reader);
 		while (in.hasNextLine()) {
@@ -304,9 +304,9 @@ public class Board {
 		System.out.println(board.calcIndex(6, 0));
 		
 		
-		for (int i = 0; i < 460; i++) {
-			if (gogo.contains(board.getCellAt(i))) 
-				System.out.println("WE HAVE A WINNER!@ " + i);
-		}
+//		for (int i = 0; i < 460; i++) {
+//			if (gogo.contains(board.getCellAt(i))) 
+//				System.out.println("WE HAVE A WINNER!@ " + i);
+//		}
 	}
 }

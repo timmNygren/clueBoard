@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testrun name="Tests" project="Clue_Board" tests="34" started="34" failures="0" errors="0" ignored="0">
+  <testsuite name="Tests.BoardInitTests" time="0.001">
+    <testcase name="testRooms" classname="Tests.BoardInitTests" time="0.001"/>
+    <testcase name="testNumberOfDoorways" classname="Tests.BoardInitTests" time="0.0"/>
+    <testcase name="testCalcIndex" classname="Tests.BoardInitTests" time="0.0"/>
+    <testcase name="testRoomInitials" classname="Tests.BoardInitTests" time="0.0"/>
+    <testcase name="testBoardDimensions" classname="Tests.BoardInitTests" time="0.0"/>
+    <testcase name="FourDoorDirections" classname="Tests.BoardInitTests" time="0.0"/>
+  </testsuite>
+  <testsuite name="Tests.CRBoardAdjTargetTests" time="0.001">
+    <testcase name="testRoomExit" classname="Tests.CRBoardAdjTargetTests" time="0.0"/>
+    <testcase name="testAdjacenciesInsideRooms" classname="Tests.CRBoardAdjTargetTests" time="0.0"/>
+    <testcase name="testAdjacencyRoomExit" classname="Tests.CRBoardAdjTargetTests" time="0.001"/>
+    <testcase name="testAdjacencyWalkways" classname="Tests.CRBoardAdjTargetTests" time="0.0"/>
+    <testcase name="testAdjacencyDoorways" classname="Tests.CRBoardAdjTargetTests" time="0.0"/>
+    <testcase name="testTargetsOneStep" classname="Tests.CRBoardAdjTargetTests" time="0.0"/>
+    <testcase name="testTargetsTwoSteps" classname="Tests.CRBoardAdjTargetTests" time="0.0"/>
+    <testcase name="testTargetsFourSteps" classname="Tests.CRBoardAdjTargetTests" time="0.0"/>
+    <testcase name="testTargetsSixSteps" classname="Tests.CRBoardAdjTargetTests" time="0.0"/>
+    <testcase name="testTargetsIntoRoom" classname="Tests.CRBoardAdjTargetTests" time="0.0"/>
+    <testcase name="testTargetsIntoRoomShortcut" classname="Tests.CRBoardAdjTargetTests" time="0.0"/>
+  </testsuite>
+  <testsuite name="Tests.BoardAdjTargetTests" time="0.038">
+    <testcase name="testRoomExit" classname="Tests.BoardAdjTargetTests" time="0.001"/>
+    <testcase name="testAdjacenciesInsideRooms" classname="Tests.BoardAdjTargetTests" time="0.0"/>
+    <testcase name="testAdjacencyRoomExit" classname="Tests.BoardAdjTargetTests" time="0.0"/>
+    <testcase name="testAdjacencyWalkways" classname="Tests.BoardAdjTargetTests" time="0.0"/>
+    <testcase name="testAdjacencyDoorways" classname="Tests.BoardAdjTargetTests" time="0.0"/>
+    <testcase name="testTargetsOneStep" classname="Tests.BoardAdjTargetTests" time="0.0"/>
+    <testcase name="testTargetsTwoSteps" classname="Tests.BoardAdjTargetTests" time="0.0"/>
+    <testcase name="testTargetsFourSteps" classname="Tests.BoardAdjTargetTests" time="0.002"/>
+    <testcase name="testTargetsSixSteps" classname="Tests.BoardAdjTargetTests" time="0.001"/>
+    <testcase name="testTargetsIntoRoom" classname="Tests.BoardAdjTargetTests" time="0.001"/>
+    <testcase name="testTargetsIntoRoomShortcut" classname="Tests.BoardAdjTargetTests" time="0.033"/>
+  </testsuite>
+  <testsuite name="Tests.clueTests" time="0.0">
+    <testcase name="testCalcIndex" classname="Tests.clueTests" time="0.0"/>
+    <testcase name="testRoomInitials" classname="Tests.clueTests" time="0.0"/>
+    <testcase name="testRoomsSize" classname="Tests.clueTests" time="0.0"/>
+    <testcase name="testRoomChars" classname="Tests.clueTests" time="0.0"/>
+    <testcase name="testDoorDirections" classname="Tests.clueTests" time="0.0"/>
+    <testcase name="testBoardDimensions" classname="Tests.clueTests" time="0.0"/>
+  </testsuite>
+</testrun>

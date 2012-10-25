@@ -17,6 +17,7 @@ import clueGame.BadConfigFormatException;
 import clueGame.Board;
 import clueGame.BoardCell;
 import clueGame.RoomCell;
+import clueGame.RoomCell.DoorDirection;
 
 public class BoardInitTests {
 	// I made this static because I only want to set it up one 
