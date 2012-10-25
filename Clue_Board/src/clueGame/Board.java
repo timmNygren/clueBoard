@@ -41,11 +41,7 @@ public class Board {
 			}
 			rooms.put(line[0].charAt(0), line[1]);
 		}
-		
-//		Set<Character> keySet = rooms.keySet();
-//		for (Character key : keySet)
-//			System.out.println(key + " && " + rooms.get(key));
-		
+			
 		in.close();
 	}
 	
@@ -54,10 +50,10 @@ public class Board {
 		Scanner in = new Scanner(reader);
 		cells = new ArrayList<BoardCell>();
 		
-		board = new BoardCell[numRows+2][numColumns+2];
-		int rows = 1;
+		board = new BoardCell[numRows][numColumns];
+		int rows = 0;
 		while (in.hasNextLine()) {
-			int cols = 1;
+			int cols = 0;
 			String[] line = in.nextLine().split("\\,");
 			
 			if (line.length != numColumns) {
@@ -71,41 +67,21 @@ public class Board {
 				if (x.equalsIgnoreCase("w")) {
 					WalkwayCell wCell = new WalkwayCell();
 					cells.add(wCell);
-					
-					
 					board[rows][cols] = wCell;
 				} else {
 					RoomCell rCell = new RoomCell(x + " ");
 					cells.add(rCell);
-					
 					board[rows][cols] = rCell;
 					
 				}
-				
-				//board[rows][cols] = x;					//extra optional array for keepers
 				
 				cols++;
 			}
 			rows++;
 		}
 		in.close();
-		// Z border padding
-		for (int i = 0; i < numRows+2; i++) {
-			for (int j = 0; j < numColumns+2; j++) {
-				//top border
-				if (i == 0)
-					board[i][j] = new RoomCell("Z ");
-				//left border
-				else if (j == 0)
-					board[i][j] = new RoomCell("Z ");
-				//bottom border
-				else if (i == numRows+1)
-					board[i][j] = new RoomCell("Z ");
-				//right border
-				else if (j == numColumns+1)
-					board[i][j] = new RoomCell("Z ");
-			}
-		}
+		
+		
 	}
 	
 	public void printBoard() {
@@ -118,7 +94,7 @@ public class Board {
 	}
 	
 	public void getRowCol(String inputFile) throws FileNotFoundException, BadConfigFormatException{
-		int previous = 0;
+		int most = 0, previous = 0;
 		FileReader reader = new FileReader(inputFile);
 		Scanner in = new Scanner(reader);
 		while (in.hasNextLine()) {
@@ -145,7 +121,14 @@ public class Board {
 	}
 	
 	public int calcIndex(int rowNum, int columnNum) {
-		return grid[rowNum][columnNum];
+		try{
+			int index = grid[rowNum][columnNum];
+			return index;
+		}
+		catch(ArrayIndexOutOfBoundsException e){
+			return -1;
+		}
+		
 	}
 	
 	public RoomCell getRoomCellAt(int row, int col) {
@@ -171,60 +154,125 @@ public class Board {
 	}
 
 	
-	public void calcAdjacencies() {
-		int x = 0;
-		for (int i = 1; i < numRows+1; i++) {	
-			
-			for (int j = 1; j < numColumns+1; j++) {
-				LinkedList<Integer> list = new LinkedList<Integer>();
-
-				if (board[i][j].isDoorWay()) {
-					RoomCell p =(RoomCell) board[i][j];
-					if (p.getDoorDirection() == DoorDirection.UP)
-						list.add(grid[i-2][j-1]);
-					if (p.getDoorDirection() == DoorDirection.RIGHT)
-						list.add(grid[i-1][j]);
-					if (p.getDoorDirection() == DoorDirection.DOWN)
-						list.add(grid[i][j-1]);
-					if (p.getDoorDirection() == DoorDirection.LEFT)
-						list.add(grid[i-1][j-2]);	
-					
+	public void calcAdjacencies(){
+		//This room will be used to add to the list of adjacencies
+		RoomCell tempRoom;
 		
-				} else if (!board[i][j].isRoom()) {		
-					// check above
-					if (board[i-1][j].isDoorWay()) {
-						RoomCell p = (RoomCell) board[i-1][j];
-						if (p.getDoorDirection() == DoorDirection.DOWN)
-							list.add(grid[i-2][j-1]);
-					} else if (board[i-1][j].isWalkway())
-						list.add(grid[i-2][j-1]);
-					// check right
-					if (board[i][j+1].isDoorWay()) {
-						RoomCell p = (RoomCell) board[i][j+1];
-						if (p.getDoorDirection() == DoorDirection.LEFT)
-							list.add(grid[i-1][j]);
-					} else if (board[i][j+1].isWalkway())
-						list.add(grid[i-1][j]);
-					//check below
-					if (board[i+1][j].isDoorWay()) {
-						RoomCell p = (RoomCell) board[i+1][j];
-						if (p.getDoorDirection() == DoorDirection.UP)
-							list.add(grid[i][j-1]);
-					} else if (board[i+1][j].isWalkway())
-						list.add(grid[i][j-1]);
-					//check left
-					if (board[i][j-1].isDoorWay()) {
-						RoomCell p = (RoomCell) board[i][j-1];
-						if (p.getDoorDirection() == DoorDirection.RIGHT)
-							list.add(grid[i-1][j-2]);
-					} else if (board[i][j-1].isWalkway())
-						list.add(grid[i-1][j-2]);
+		//This variable keeps track of where to put each adjecencies list
+		int position = 0;
+		
+		//Iterate through the entire board and calculate adjacencies for every cell
+		for(int row=0; row<numRows; row++){
+			for(int col=0; col<numColumns; col++){
+				//Create a list to store the adjacencies for the current cell
+				LinkedList<Integer> list = new LinkedList<Integer>();
+				
+				
+				//If the cell is a room cell, it is not necessary to calculate adjacencies
+				if(board[row][col].isRoom() && !board[row][col].isDoorWay()){
+					//Store the adjacencies and update position
+					adjMtx.put(position, list);
+					System.out.println("Adding Position Room" +position);
+					position++;
+					continue;
+				}
+				
+				//If the cell is a door then add only one adjacency according to the door direction
+				if (board[row][col].isDoorWay()) {
+					System.out.println("On doorway: "+row+" "+col);
+					tempRoom =(RoomCell) board[row][col];
+					if (tempRoom.getDoorDirection() == DoorDirection.UP)
+						list.add(grid[row-1][col]);
+					if (tempRoom.getDoorDirection() == DoorDirection.RIGHT)
+						list.add(grid[row][col+1]);
+					if (tempRoom.getDoorDirection() == DoorDirection.DOWN)
+						list.add(grid[row+1][col]);
+					if (tempRoom.getDoorDirection() == DoorDirection.LEFT)
+						list.add(grid[row][col-1]);	
+					adjMtx.put(position, list);
+					System.out.println("Adding Position Room" +position);
+					position++;
+					continue;
+				} 
+				
+				//If the cell is a walkway, check all sides of cell and make sure not to add adjacencies
+				//that are off the board
+				if(!board[row][col].isRoom()){
 					
-				}	
-				adjMtx.put(x, list);	
-				x++;
+					//Check Above
+					if(calcIndex(row-1,col)!=-1){
+						//If a door is found, only add it to the adjacencies list if the door direction
+						//indicates that it can be entered from the current cell
+						if(board[row-1][col].isDoorWay()){
+							//Create a roomcell so that door direction can be accessed
+							RoomCell tempDoor = (RoomCell) board[row-1][col];
+							if(tempDoor.getDoorDirection() == DoorDirection.DOWN){
+								list.add(grid[row-1][col]);
+							}
+						}else if(board[row-1][col].isWalkway()){
+							list.add(grid[row-1][col]);
+						}
+						
+					}
+					
+					//Check Below
+					if(calcIndex(row+1,col)!=-1){
+						//If a door is found, only add it to the adjacencies list if the door direction
+						//indicates that it can be entered from the current cell
+						if(board[row+1][col].isDoorWay()){
+							//Create a roomcell so that door direction can be accessed
+							RoomCell tempDoor = (RoomCell) board[row+1][col];
+							if(tempDoor.getDoorDirection() == DoorDirection.UP){
+								list.add(grid[row+1][col]);
+							}
+						}else if(board[row+1][col].isWalkway()){
+							list.add(grid[row+1][col]);
+						}
+						
+					}
+					
+					//Check Left
+					if(calcIndex(row,col-1)!=-1){
+						
+						//If a door is found, only add it to the adjacencies list if the door direction
+						//indicates that it can be entered from the current cell
+						if(board[row][col-1].isDoorWay()){
+							//Create a roomcell so that door direction can be accessed
+							RoomCell tempDoor = (RoomCell) board[row][col-1];
+							if(tempDoor.getDoorDirection() == DoorDirection.RIGHT){
+								list.add(grid[row][col-1]);
+							}
+						}else if(board[row][col-1].isWalkway()){
+							list.add(grid[row][col-1]);
+						}
+						
+						
+					}
+					
+					//Check Right
+					if(calcIndex(row,col+1)!=-1){
+						//If a door is found, only add it to the adjacencies list if the door direction
+						//indicates that it can be entered from the current cell
+						if(board[row][col+1].isDoorWay()){
+							//Create a roomcell so that door direction can be accessed
+							RoomCell tempDoor = (RoomCell) board[row][col+1];
+							if(tempDoor.getDoorDirection() == DoorDirection.LEFT){
+								list.add(grid[row][col+1]);
+							}
+						}else if(board[row][col+1].isWalkway()){
+							list.add(grid[row][col+1]);
+						}
+
+					}
+				}
+				
+				//Store the adjacencies and update position
+				adjMtx.put(position, list);
+				System.out.println("Adding Position " +position);
+				position++;
+				
+				
 			}
-			
 		}
 	}
 	
@@ -259,6 +307,9 @@ public class Board {
 	}
 	
 	public void bridge(int start, int steps, int begin, int prev, int intSteps) {
+//		System.out.println("Start = "+ start);
+//		System.out.println("Rows: "+ numRows + " Cols: "+numColumns);
+//		System.out.println(adjMtx.get(5));
 		for (int a = 0; a < adjMtx.get(start).size(); a++) {
 			if (steps == intSteps-1) {
 				setSeen(begin);
@@ -294,19 +345,10 @@ public class Board {
 		Board board = new Board();
 		
 		board.loadConfigFiles("clueboard.csv", "Legend.txt");
-		//board.printBoard();
 		System.out.println(board.numRows + ", " + board.numColumns);
 		board.calcAdjacencies();
-		board.calcTargets(board.calcIndex(19, 6), 4);
-		board.printTargets();
-		Set<BoardCell> gogo = board.getTargets();
-		System.out.println();
-		System.out.println(board.calcIndex(6, 0));
+
 		
 		
-		for (int i = 0; i < 460; i++) {
-			if (gogo.contains(board.getCellAt(i))) 
-				System.out.println("WE HAVE A WINNER!@ " + i);
-		}
 	}
 }
