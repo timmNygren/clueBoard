@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testrun name="CRBoardAdjTargetTests" project="Clue_Board" tests="11" started="11" failures="0" errors="0" ignored="0">
+  <testsuite name="Tests.CRBoardAdjTargetTests" time="0.001">
+    <testcase name="testRoomExit" classname="Tests.CRBoardAdjTargetTests" time="0.0"/>
+    <testcase name="testAdjacencyWalkways" classname="Tests.CRBoardAdjTargetTests" time="0.0"/>
+    <testcase name="testAdjacencyDoorways" classname="Tests.CRBoardAdjTargetTests" time="0.0"/>
+    <testcase name="testTargetsOneStep" classname="Tests.CRBoardAdjTargetTests" time="0.0"/>
+    <testcase name="testTargetsTwoSteps" classname="Tests.CRBoardAdjTargetTests" time="0.001"/>
+    <testcase name="testTargetsFourSteps" classname="Tests.CRBoardAdjTargetTests" time="0.0"/>
+    <testcase name="testTargetsSixSteps" classname="Tests.CRBoardAdjTargetTests" time="0.0"/>
+    <testcase name="testTargetsIntoRoom" classname="Tests.CRBoardAdjTargetTests" time="0.0"/>
+    <testcase name="testTargetsIntoRoomShortcut" classname="Tests.CRBoardAdjTargetTests" time="0.0"/>
+    <testcase name="testAdjacenciesInsideRooms" classname="Tests.CRBoardAdjTargetTests" time="0.0"/>
+    <testcase name="testAdjacencyRoomExit" classname="Tests.CRBoardAdjTargetTests" time="0.0"/>
+  </testsuite>
+</testrun>
