@@ -17,7 +17,7 @@ public class BoardAdjTargetTests {
 	@BeforeClass
 	public static void setUp() throws FileNotFoundException, BadConfigFormatException {
 		board = new Board();
-		board.loadConfigFiles("clueboard.csv", "Legend.txt", "player.txt");
+		board.loadConfigFiles("clueboard.csv", "Legend.txt", "player.txt", "");
 		board.calcAdjacencies();
 	}
 

@@ -79,6 +79,8 @@ public class Board {
 		System.out.println("NOT IMPLEMENTED");
 	}
 	
+	
+	
 	public boolean checkAccusation(String person, String room, String weapon) {
 		System.out.println("DEFAULT RETURN FALSE");
 		return false;
