@@ -14,7 +14,10 @@ public class Card {
 		return false;
 	}
 	
-	
+	public Card(String cardName, CardType type){
+		name=cardName;
+		cardType = type;
+	}
 	
 	
 	public String getName() {

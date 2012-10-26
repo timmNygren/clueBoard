@@ -5,26 +5,19 @@ public class Solution {
 	public String weapon;
 	public String room;
 	
-	
-	public String getPerson() {
-		return person;
-	}
-	public void setPerson(String person) {
+	public Solution(String person, String weapon, String room) {
 		this.person = person;
-	}
-	public String getWeapon() {
-		return weapon;
-	}
-	public void setWeapon(String weapon) {
 		this.weapon = weapon;
-	}
-	public String getRoom() {
-		return room;
-	}
-	public void setRoom(String room) {
 		this.room = room;
 	}
 	
-	
+	public boolean equals(Solution s){
+		if(person.equals(s.person) && weapon.equals(s.weapon) && room.equals(s.room)){
+			return true;
+		}else{
+			return false;
+		}
+		
+	}
 	
 }

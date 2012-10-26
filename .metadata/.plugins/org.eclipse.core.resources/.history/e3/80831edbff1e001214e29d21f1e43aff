@@ -1,0 +1,48 @@
+package PlayerTests;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+
+import clueGame.*;
+
+import static org.junit.Assert.*;
+
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+public class GameSetupTests {
+	//Declarations/variables
+	public static Board board;
+	
+	
+	
+	@BeforeClass
+	public static void setUp() throws FileNotFoundException, BadConfigFormatException {
+		board = new Board();
+		board.loadConfigFiles("clueboard.csv","Legend.txt" , "player.txt");
+		
+	}
+	
+	
+	@Test
+	public void loadPeopleTest() {
+		ArrayList<Player> computers = board.getComputers();
+		HumanPlayer player = board.getHumanPlayer();
+		assertTrue(player.getName().equals("Jean-Luc"));
+		assertTrue(player.getColor().equals("Black"));
+		assertTrue(player.getStartingLocation() == 42);
+		
+		assertTrue(computers.get(0).getName().equals("Zeus Deuces"));
+		assertTrue(computers.get(4).getName().equals("Jesus F."));
+	}
+	
+	@Test
+	public void loadCardsTest() {
+		//stub
+	}
+	
+	@Test
+	public void dealCardsTest() {
+		//stub
+	}
+
+}

@@ -16,22 +16,13 @@ public class Board {
 	private Set<BoardCell> targets;
 	private Set<Integer> targetsInt;
 	private ArrayList<Integer> seen = new ArrayList<Integer>();
-	private ArrayList<Card> deck = new ArrayList<Card>();
-	
-	private ArrayList<ComputerPlayer> computers;
-	private HumanPlayer player;
-	
 	
 	public Board() {
 		adjMtx = new TreeMap<Integer, LinkedList<Integer>>();
 	}
 	
-	public ArrayList<Card> getDeck(){
-		return deck;
-	}
-	
-	public void loadConfigFiles(String boardFile, String legendFile, String playerFile, String deckFile) throws FileNotFoundException, BadConfigFormatException {
-		loadDeck(deckFile);
+	public void loadConfigFiles(String boardFile, String legendFile, String playerFile) throws FileNotFoundException, BadConfigFormatException {
+
 		loadLegend(legendFile);
 		loadPlayer(playerFile);
 		getRowCol(boardFile);
@@ -39,12 +30,6 @@ public class Board {
 		fillGrid();
 	}
 	
-	private void loadDeck(String deckFile) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
 	public void loadLegend(String inputFile) throws FileNotFoundException, BadConfigFormatException {
 		rooms = new TreeMap<Character, String>();
 		FileReader reader = new FileReader(inputFile);
@@ -63,37 +48,7 @@ public class Board {
 	
 	//load in the players from a file
 	public void loadPlayer(String inputFile) {
-		computers =  new ArrayList<ComputerPlayer>();
-		System.out.println("NOT IMPLEMENTED");
-	}
-	
-	public void selectAnswer() {
-		System.out.println("NOT IMPLEMENTED");
-	}
-	
-	public void deal(ArrayList<String> cardList) {
-		System.out.println("NOT IMPLEMENTED");
-	}
-	
-	public void deal() {
-		System.out.println("NOT IMPLEMENTED");
-	}
-	
-	public boolean checkAccusation(String person, String room, String weapon) {
-		System.out.println("DEFAULT RETURN FALSE");
-		return false;
-	}
-	
-	public void handleSuggestion(String person, String weapon, String room) {
-		System.out.println("NOT IMPLEMENTED");
-	}
-	
-	public ArrayList<ComputerPlayer> getComputers() {
-		return computers;
-	}
-	
-	public HumanPlayer getHumanPlayer() {
-		return player;
+		//stub
 	}
 	
 	public void loadBoard(String inputFile) throws FileNotFoundException, BadConfigFormatException {
@@ -395,7 +350,7 @@ public class Board {
 	public static void main(String[] args) throws FileNotFoundException, BadConfigFormatException {
 		Board board = new Board();
 		
-		board.loadConfigFiles("clueboard.csv", "Legend.txt", "player.txt", "cards.txt");
+		board.loadConfigFiles("clueboard.csv", "Legend.txt", "player.txt");
 		System.out.println(board.numRows + ", " + board.numColumns);
 		board.calcAdjacencies();
 

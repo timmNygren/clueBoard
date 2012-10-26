@@ -1,0 +1,40 @@
+package PlayerTests;
+import java.io.FileNotFoundException;
+
+import clueGame.*;
+
+import static org.junit.Assert.*;
+
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+public class GameSetupTests {
+	//Declarations/variables
+	public static Board board;
+	
+	
+	
+	@BeforeClass
+	public static void setUp() throws FileNotFoundException, BadConfigFormatException {
+		board = new Board();
+		board.loadConfigFiles("clueboard.csv","Legend.txt" , "player.txt");
+		
+	}
+	
+	
+	@Test
+	public void loadPeopleTest() {
+		
+	}
+	
+	@Test
+	public void loadCardsTest() {
+		//stub
+	}
+	
+	@Test
+	public void dealCardsTest() {
+		//stub
+	}
+
+}
