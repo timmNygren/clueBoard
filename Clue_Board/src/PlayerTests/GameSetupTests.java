@@ -13,7 +13,7 @@ import org.junit.Test;
 public class GameSetupTests {
 	//Declarations/variables
 	public static Board board;
-	public static ArrayList<Player> computers = board.getComputers();
+	public static ArrayList<ComputerPlayer> computers = board.getComputers();
 	
 	
 	@BeforeClass

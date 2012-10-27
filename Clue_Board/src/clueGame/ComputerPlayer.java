@@ -7,6 +7,7 @@ public class ComputerPlayer extends Player {
 	private Set<BoardCell> locations;
 	private char lastRoomVisited;
 	private Solution playerSuggestion;
+	public Object lastRoom;
 	
 	
 	public ComputerPlayer() {
@@ -40,7 +41,12 @@ public class ComputerPlayer extends Player {
 	
 	public void setLastVisited(BoardCell cell) {
 		if (cell instanceof RoomCell) {
-			((RoomCell) cell)
+			
 		}
+	}
+
+	public void setSuggestion(String string, String string2, String string3) {
+		// TODO Auto-generated method stub
+		
 	}
 }

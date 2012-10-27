@@ -13,16 +13,44 @@ import clueGame.*;
 public class GameActionsTests {
 	//declarations/variables
 	public static Board board;
-	public static ArrayList<ComputerPlayer> computers = board.getComputers();
+	public static ArrayList<ComputerPlayer> computers;
 	public static Solution solution;
+	public static Card syringeCard;
+	public static Card pSHCard;
+	public static Card cPetersonCard;
+	public static Card kitchenCard;
+	public static Card ballRoomCard;
+	public static Card feralMonkeyCard;
+	public static Card barackCard;
+	public static Card steveCard;
+	public static Card studyCard;
+	public static Card kidneyCard;
+	public static Card bananaCard;
+	public static Card loungeCard;
 	
 	
 	
 	@BeforeClass
 	public static void setUp() throws FileNotFoundException, BadConfigFormatException {
 		board = new Board();
-		board.loadConfigFiles("clueboard.csv","Legend.txt" , "player.txt", "cards.txt"); 
+		board.loadConfigFiles("clueboard.csv","Legend.txt" , "player.txt", "cards.txt");
+		computers = board.getComputers();
 		solution = new Solution("Cricket Peterson", "Herring", "Kitchen");
+		
+		// these cards are static variables
+		pSHCard = new Card("Philip Seymour Hoffman", Card.CardType.PERSON);
+		cPetersonCard = new Card("Cricket Peterson", Card.CardType.PERSON);
+		barackCard = new Card("Barack Obama", Card.CardType.PERSON);
+		steveCard = new Card("Steve", Card.CardType.PERSON);
+		kitchenCard = new Card("Kitchen", Card.CardType.ROOM);
+		ballRoomCard = new Card("Ballroom", Card.CardType.ROOM);
+		studyCard = new Card("Study", Card.CardType.ROOM);
+		loungeCard = new Card("Lounge", Card.CardType.ROOM);
+		syringeCard = new Card("Syringe full of malaria", Card.CardType.WEAPON);
+		feralMonkeyCard = new Card("Feral Monkey", Card.CardType.WEAPON);
+		bananaCard = new Card("Slippery Banana Peel", Card.CardType.WEAPON);
+		kidneyCard = new Card("Kidneys sold on black market", Card.CardType.WEAPON);
+		
 		
 	}
 	
@@ -38,7 +66,6 @@ public class GameActionsTests {
 	
 	@Test
 	public void selectLocationTest() {
-		//Test random preference
 		ComputerPlayer player = new ComputerPlayer();
 		
 		// Pick a location with no rooms in target, just three targets
@@ -62,16 +89,157 @@ public class GameActionsTests {
 				fail("Invalid target selected");
 		}
 		// Ensure we have 100 total selections (fail should also ensure)
-		assertEquals(100, loc_384Tot);
+		assertEquals(100, loc_358Tot + loc_382Tot + loc_362Tot + loc_384Tot);
+		
+		// Ensure each target was selected more than once
+		assertTrue(loc_358Tot > 10);
+		assertTrue(loc_382Tot > 10);
+		assertTrue(loc_362Tot > 10);
+		assertTrue(loc_384Tot > 10);
 		
 		
-		//Test Randomness of locations chosen
+		//Test room preference
+		board.calcTargets(52,2);
+		BoardCell selected = board.getCellAt(player.pickLocation(board.getTargets()));
+		assertTrue(selected.isDoorWay() && !player.lastRoom.equals(selected));
 		
 	}
 	
 	@Test
 	public void disproveSuggestionTest() {
-		//stub
+		//Test for one player, one correct match
+		Player testPlayer1 = new Player();
+		ArrayList<Card> player1hand = new ArrayList<Card>();
+		ArrayList<Card> player2hand = new ArrayList<Card>();
+		ArrayList<Card> player3hand = new ArrayList<Card>();
+		ArrayList<Card> humanHand = new ArrayList<Card>();
+		
+		player1hand.add(pSHCard);
+		player1hand.add(cPetersonCard);
+		player1hand.add(kitchenCard);
+		player1hand.add(ballRoomCard);
+		player1hand.add(syringeCard);
+		player1hand.add(feralMonkeyCard);
+		testPlayer1.setHand(player1hand);
+		assertTrue(testPlayer1.disproveSuggestion("Cricket Peterson", "Library", "Pistol").equals(cPetersonCard));
+		assertTrue(testPlayer1.disproveSuggestion("Barack Obama", "Kitchen", "Pistol").equals(kitchenCard));
+		assertTrue(testPlayer1.disproveSuggestion("Philip Seymour Hoffman", "Library", "Feral Monkey").equals(feralMonkeyCard));
+		assertTrue(testPlayer1.disproveSuggestion("Steve", "Office", "Pistol") == null);
+
+		//Test for one player, multiple possible matches
+		boolean pshCardReturned=false;
+		boolean kitchenCardReturned=false;
+		boolean syringeCardReturned=false;
+		boolean wrongCardReturned = false;
+		
+		for(int i=0; i<100; i++){
+			if(testPlayer1.disproveSuggestion("Philip Seymour Hoffman", "Kitchen", "Syringe full of malaria").equals(pSHCard)){
+				pshCardReturned=true;
+			}
+			if(testPlayer1.disproveSuggestion("Philip Seymour Hoffman", "Kitchen", "Syringe full of malaria").equals(kitchenCard)){
+				kitchenCardReturned=true;
+			}
+			if(testPlayer1.disproveSuggestion("Philip Seymour Hoffman", "Kitchen", "Syringe full of malaria").equals(syringeCard)){
+				syringeCardReturned=true;
+			}
+			if(!testPlayer1.disproveSuggestion("Philip Seymour Hoffman", "Kitchen", "Syringe full of malaria").equals(pSHCard) && !!testPlayer1.disproveSuggestion("Philip Seymour Hoffman", "Kitchen", "Syringe full of malaria").equals(kitchenCard) && !!testPlayer1.disproveSuggestion("Philip Seymour Hoffman", "Kitchen", "Syringe full of malaria").equals(syringeCard)){
+				wrongCardReturned = true;
+			}
+		}
+		
+		assertTrue(pshCardReturned);
+		assertTrue(kitchenCardReturned);
+		assertTrue(syringeCardReturned);
+		assertFalse(wrongCardReturned);
+		
+		//Test that all players are queried
+		//Make test players
+		HumanPlayer human = new HumanPlayer();
+		ComputerPlayer cPlayer1 = new ComputerPlayer();
+		ComputerPlayer cPlayer2 = new ComputerPlayer();
+		ComputerPlayer cPlayer3 = new ComputerPlayer();
+		//Give players their hands
+		ArrayList<Card> hand = new ArrayList<Card>();
+		player1hand.add(pSHCard);
+		player1hand.add(kidneyCard);
+		player1hand.add(kitchenCard);
+		cPlayer1.setHand(player1hand);
+		player2hand.add(ballRoomCard);
+		player2hand.add(syringeCard);
+		player2hand.add(barackCard);
+		cPlayer2.setHand(player2hand);
+		player3hand.add(studyCard);
+		player3hand.add(steveCard);
+		player3hand.add(feralMonkeyCard);
+		cPlayer3.setHand(player3hand);
+		humanHand.add(cPetersonCard);
+		humanHand.add(syringeCard);
+		humanHand.add(feralMonkeyCard);
+		human.setHand(humanHand);
+		
+		
+		//made a suggestion which no players could disprove, and ensured that null was returned
+		boolean nullReturned=true;
+		for(int i=0; i<computers.size(); i++){
+			if(computers.get(i).disproveSuggestion("Skeletor", "Zoo", "Donkey")!=null){
+				nullReturned=false;
+				break;
+			}
+		}
+		
+		assertTrue(nullReturned);
+		
+		
+		//made a suggestion that only the human could disprove, and ensured that the correct Card was returned.
+		nullReturned=true;
+		for(int i=0; i<computers.size(); i++){
+			if(computers.get(i).disproveSuggestion("Cricket Peterson", "Zoo", "Donkey")!=null){
+				nullReturned=false;
+			}
+		}
+		assertTrue(human.disproveSuggestion("Cricket Peterson", "Zoo", "Donkey").equals(cPetersonCard));
+		assertTrue(nullReturned);
+		
+		//The person who made the suggestion was the only one who could disprove it, null was returned
+		computers.get(0).setSuggestion("Cricket Peterson", "Zoo", "Donkey");
+		for(int i=1; i<computers.size(); i++){
+			if(computers.get(i).disproveSuggestion("Cricket Peterson", "Zoo", "Donkey")!=null){
+				nullReturned=false;
+			}
+		}
+		
+		//To ensure that the players are not queried in the same order each time
+		player2hand.clear();
+		player2hand.add(ballRoomCard);
+		player2hand.add(syringeCard);
+		player2hand.add(barackCard);
+		cPlayer2.setHand(player2hand);
+		player3hand.clear();
+		player3hand.add(studyCard);
+		player3hand.add(barackCard);
+		player3hand.add(feralMonkeyCard);
+		cPlayer3.setHand(player3hand);
+		computers.get(0).setSuggestion("Barack Obama", "Zoo", "Donkey");
+		boolean c1Chosen =false;
+		boolean c2Chosen =false;
+		boolean otherChosen =false;
+		for(int j=0; j<100; j++){
+			for(int i=1; i<computers.size(); i++){
+				if(computers.get(i).disproveSuggestion("Barack Obama", "Zoo", "Donkey")!=null){
+					if(i==1){
+						c1Chosen=true;
+					}
+					if(i==2){
+						c2Chosen=true;
+					}else{
+						otherChosen = true;
+					}
+				}
+			}
+		}
+		assertTrue(c1Chosen);
+		assertTrue(c2Chosen);
+		assertFalse(otherChosen);
 	}
 	
 	@Test

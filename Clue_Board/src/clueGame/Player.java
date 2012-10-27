@@ -9,15 +9,12 @@ public class Player {
 	private ArrayList<Card> hand;
 	private int location;
 	
-	public void disproveSuggestion(String person, String room, String weapon) {
+	public Card disproveSuggestion(String person, String room, String weapon) {
+		//Randomly select card to be shown if more than one
+		
+		return null;
 		
 	}
-	
-	
-	
-	
-	
-	
 	
 	//for testing
 	public String getName() {
