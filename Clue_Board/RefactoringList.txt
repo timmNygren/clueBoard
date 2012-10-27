@@ -1,4 +1,6 @@
 1. Changed door direction of the Billiard Room (R) on both colored excel sheet and .csv file
-2. Removed Z-padding
-	-
-3. Removed unused imports
+2. Removed Z-padding:This was quite a lengthy process. Z-padding created many problems which took a long time to fix
+	3.The Z-padding insertion code was taken out
+	4.Calc Adjacencies had to be re-written because all of the code had offsets built into it to account for the z-padding
+	5.Had to go into all the other places in Board.java and take out all of the offsets.
+6. Removed unused imports
