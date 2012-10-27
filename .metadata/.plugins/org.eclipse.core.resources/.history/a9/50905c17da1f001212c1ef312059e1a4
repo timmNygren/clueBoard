@@ -246,8 +246,6 @@ public class GameActionsTests {
 	public void makeSuggestionTest() {
 		ComputerPlayer computer = new ComputerPlayer();
 		Suggestion computerSuggestion;
-		
-		computer.setLocation(72);
 		computer.updateSeen(pSHCard);
 		computer.updateSeen(cPetersonCard);
 		computer.updateSeen(steveCard);
@@ -258,9 +256,9 @@ public class GameActionsTests {
 		computerSuggestion = computer.createSuggestion(board.getCellAt(computer.getLocation()));
 		
 		
-		assertTrue(barackCard.equals(computerSuggestion.person));
-		assertTrue(syringeCard.equals(computerSuggestion.weapon));
-		assertTrue(loungeCard.equals(computerSuggestion.room));
+		assertEquals(computerSuggestion.person, barackCard);
+		assertEquals(computerSuggestion.weapon, syringeCard);
+		assertEquals(computerSuggestion.room, board.getCellAt(computer.getLocation()));
 		barackCard = new Card("Barack Obama", Card.CardType.PERSON);
 		syringeCard = new Card("Syringe full of malaria", Card.CardType.WEAPON);
 	}

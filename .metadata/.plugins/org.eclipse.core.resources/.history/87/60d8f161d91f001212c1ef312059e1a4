@@ -3,12 +3,8 @@ package clueGame;
 import java.util.ArrayList;
 import java.util.Set;
 
-import clueGame.Card.CardType;
-
 public class ComputerPlayer extends Player {
 	private Set<BoardCell> locations;
-	private int location;
-	private ArrayList<Card> notSeen;
 	private char lastRoomVisited;
 	private Solution playerSuggestion;
 	public Object lastRoom;
@@ -16,7 +12,6 @@ public class ComputerPlayer extends Player {
 	
 	public ComputerPlayer() {
 		super();
-		//initialized notSeen with every card
 	}
 	
 	public int pickLocation(Set<BoardCell> targets) {
@@ -32,14 +27,8 @@ public class ComputerPlayer extends Player {
 		
 	}
 	
-	public Suggestion createSuggestion(BoardCell room) {
+	public void createSuggestion() {
 		//stub
-		Card temp3 = new Card(room.toString()/*Most likely not right*/, CardType.ROOM);
-		Card temp = new Card("stuff", CardType.PERSON);
-		Card temp2 = new Card("other", CardType.WEAPON);
-		//make sure room is current room computer is in
-		Suggestion suggestion = new Suggestion(temp, temp2, temp3);
-		return suggestion;
 	}
 	
 	public Solution getSuggestion(){
@@ -48,7 +37,6 @@ public class ComputerPlayer extends Player {
 	
 	public void updateSeen(Card seen) {
 		//stub
-		//removed seen cards from notSeen
 	}
 	
 	public void setLastVisited(BoardCell cell) {
@@ -60,9 +48,5 @@ public class ComputerPlayer extends Player {
 	public void setSuggestion(String string, String string2, String string3) {
 		// TODO Auto-generated method stub
 		
-	}
-	
-	public void setLocation(int location) {
-		this.location = location;
 	}
 }

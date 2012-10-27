@@ -245,9 +245,8 @@ public class GameActionsTests {
 	@Test
 	public void makeSuggestionTest() {
 		ComputerPlayer computer = new ComputerPlayer();
-		Suggestion computerSuggestion;
-		
 		computer.setLocation(72);
+		Suggestion computerSuggestion;
 		computer.updateSeen(pSHCard);
 		computer.updateSeen(cPetersonCard);
 		computer.updateSeen(steveCard);
