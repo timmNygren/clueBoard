@@ -5,7 +5,12 @@ public class RoomCell extends BoardCell {
 	private char room_init;
 	private String room;
 	
-	public RoomCell(String r) {
+	public RoomCell(){
+	}
+	
+	
+	public RoomCell(String r, int loc) {
+		super(loc);
 		room = r;
 		room_init = room.toUpperCase().charAt(0);
 		switch(room.toUpperCase().charAt(1)) {

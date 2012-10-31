@@ -13,13 +13,14 @@ import org.junit.Test;
 public class GameSetupTests {
 	//Declarations/variables
 	public static Board board;
-	public static ArrayList<ComputerPlayer> computers = board.getComputers();
+	public static ArrayList<ComputerPlayer> computers;
 	
 	
 	@BeforeClass
 	public static void setUp() throws FileNotFoundException, BadConfigFormatException {
 		board = new Board();
-		board.loadConfigFiles("clueboard.csv","Legend.txt" , "player.txt", "cards.txt"); 
+		board.loadConfigFiles("clueboard.csv","Legend.txt" , "Players.txt", "Cards.txt"); 
+		computers = board.getComputers();
 	}
 	
 	
@@ -27,19 +28,19 @@ public class GameSetupTests {
 	public void loadPeopleTest() {
 		//Test Human Player
 		HumanPlayer player = board.getHumanPlayer();
-		assertTrue(player.getName().equals("Jean-Luc"));
+		assertTrue(player.getName().equals("Jean-Luc Picard"));
 		assertTrue(player.getColor().equals("Black"));
-		assertTrue(player.getStartingLocation() == 12);
+		assertTrue(player.getStartingLocation() == 5);
 		
 		//Test Computer Player "Zeus Deuces"
 		assertTrue(computers.get(0).getName().equals("Zeus Deuces"));
-		assertTrue(computers.get(0).getColor().equals("Red"));
-		assertTrue(computers.get(0).getStartingLocation()==137);
+		assertTrue(computers.get(0).getColor().equals("Blue"));
+		assertTrue(computers.get(0).getStartingLocation()==115);
 		
-		//Test Computer Player "Jesus F."
-		assertTrue(computers.get(4).getName().equals("Jesus F."));
-		assertTrue(computers.get(4).getColor().equals("Blue"));
-		assertTrue(computers.get(4).getStartingLocation()==443);
+		//Test Computer Player "Harriet Tubman"
+		assertTrue(computers.get(4).getName().equals("Harriet Tubman"));
+		assertTrue(computers.get(4).getColor().equals("Purple"));
+		assertTrue(computers.get(4).getStartingLocation()==230);
 		
 	}
 	
@@ -49,7 +50,7 @@ public class GameSetupTests {
 		ArrayList<Card> testDeck = board.getDeck();
 		
 		//Check Number of Cards
-		assertTrue(testDeck.size()==21);
+		assertEquals(testDeck.size(),23);
 		
 		//Check Correct amount of each card
 		int weaponCards=0;
@@ -68,15 +69,37 @@ public class GameSetupTests {
 		}	
 		assertEquals(weaponCards,7);
 		assertEquals(personCards,7);
-		assertEquals(roomCards,7);
+		assertEquals(roomCards,9);
 		
 		//Test if deck contains specific cards
 		Card testCard = new Card("Rusty Knife",CardType.WEAPON);
-		assertTrue(testDeck.contains(testCard));
+		boolean rustyKnifeFound = false;
+		for(Card c:testDeck){
+			if(c.equals(testCard)){
+				rustyKnifeFound= true;
+			}
+		}
+		assertTrue(rustyKnifeFound);
+		
+		
 		testCard = new Card("Library",CardType.ROOM);
-		assertTrue(testDeck.contains(testCard));
+		boolean LibraryFound = false;
+		for(Card c:testDeck){
+			if(c.equals(testCard)){
+				LibraryFound= true;
+			}
+		}
+		assertTrue(LibraryFound);
+		
+
 		testCard = new Card("Zeus Deuces",CardType.PERSON);
-		assertTrue(testDeck.contains(testCard));
+		boolean ZeusFound = false;
+		for(Card c:testDeck){
+			if(c.equals(testCard)){
+				ZeusFound= true;
+			}
+		}
+		assertTrue(ZeusFound);
 	}
 	
 	@Test
@@ -85,22 +108,28 @@ public class GameSetupTests {
 		ArrayList<Card> testDeck = board.getDeck();
 		
 		
-				
+		//Make sure testDeck has cards beforehand
+		assertFalse(testDeck.size()==0);
+		
 		//Deal Cards to Players
 		board.deal();
 		
-		//Test if all cards have been dealt
-		assertEquals(testDeck.size(),0);
-		
-		//Test if all players have the same amount of cards
-		for(Player cPlayer:computers){
-			assertEquals(cPlayer.getHand().size(),3);
+		//Test if all cards have been dealt, by checking all players have 3 cards
+		boolean hasThreeCards = false;
+		for(ComputerPlayer cPlayer:computers){
+			if(cPlayer.getHand().size()==3){
+				hasThreeCards = true;
+			}
+			assertTrue(hasThreeCards);
+			hasThreeCards=false;
 		}
+		assertEquals(board.getHumanPlayer().getHand().size(),3);
+		
 		
 		//Test that all players have unique hands
 		for (int i = 0; i < computers.size()-1; ++i) {
 			for (int j = i + 1; j < computers.size(); ++j) {
-				assertEquals(Player.isEqualHand(computers.get(i).getHand(), computers.get(j).getHand()),false);
+				assertFalse(Player.isEqualHand(computers.get(i).getHand(), computers.get(j).getHand()));
 			}
 		}
 	}

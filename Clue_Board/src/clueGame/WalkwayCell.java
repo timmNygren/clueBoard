@@ -2,6 +2,10 @@ package clueGame;
 
 public class WalkwayCell extends BoardCell {
 	
+	public WalkwayCell(int loc){
+		super(loc);
+	}
+	
 	@Override
 	public boolean isWalkway() {
 		return true;

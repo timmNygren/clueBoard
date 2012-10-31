@@ -1,0 +1,6 @@
+H, Jean-Luc Picard, Black, 5
+C, Zeus Deuces, Blue, 115
+C, Barack Obama, White, 449
+C, Cricket Peterson, Red, 70
+C, Philip Seymour Hoffman, Yellow, 13
+C, Harriet Tubman, Purple, 230

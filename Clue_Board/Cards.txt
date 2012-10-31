@@ -1,0 +1,23 @@
+R, Kitchen
+R, Conservatory
+R, Billiard Room
+R, Library
+R, Dining Room
+R, Hall
+R, Ballroom
+R, Study
+R, Lounge
+W, Syringe full of malaria
+W, Feral Monkey
+W, Severe paper cut
+W, Kidneys sold on black market
+W, Magikarp
+W, Rusty Knife
+W, Testicular Cancer
+P, Jean-Luc
+P, Barack Obama
+P, Cricket Peterson
+P, Philip Seymour Hoffman
+P, Steve, Blue
+P, Harriet Tubman
+P, Zeus Deuces

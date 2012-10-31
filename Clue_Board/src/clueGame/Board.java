@@ -2,6 +2,7 @@ package clueGame;
 import java.io.*;
 import java.util.*;
 
+import clueGame.Card.CardType;
 import clueGame.RoomCell.DoorDirection;
 
 
@@ -21,11 +22,16 @@ public class Board {
 	private ArrayList<ComputerPlayer> computers;
 	private HumanPlayer player;
 	
+	private Random generator = new Random();
 	
 	public Board() {
 		adjMtx = new TreeMap<Integer, LinkedList<Integer>>();
 	}
 	
+	public Board(String legendFile) throws FileNotFoundException, BadConfigFormatException {
+		loadLegend(legendFile);
+	}
+
 	public ArrayList<Card> getDeck(){
 		return deck;
 	}
@@ -39,11 +45,28 @@ public class Board {
 		fillGrid();
 	}
 	
-	private void loadDeck(String deckFile) {
-		// TODO Auto-generated method stub
-		
-	}
 
+	private void loadDeck(String deckFile) throws FileNotFoundException, BadConfigFormatException {
+		FileReader reader = new FileReader(deckFile);
+		Scanner in = new Scanner(reader);
+		Card tempCard;
+		
+		while (in.hasNextLine()) {
+			String[] line = in.nextLine().split("\\, ");
+			if(line[0].contentEquals("R")){
+				tempCard = new Card(line[1],CardType.ROOM);
+			}else if(line[0].contentEquals("W")){
+				tempCard = new Card(line[1],CardType.WEAPON);
+			}else if(line[0].contentEquals("P")){
+				tempCard = new Card(line[1],CardType.PERSON);
+			}else{
+				throw new BadConfigFormatException("Invalid Card Type: "+line[0]);
+			}
+			deck.add(tempCard);
+		}
+			
+		in.close();
+	}
 
 	public void loadLegend(String inputFile) throws FileNotFoundException, BadConfigFormatException {
 		rooms = new TreeMap<Character, String>();
@@ -62,23 +85,61 @@ public class Board {
 	}
 	
 	//load in the players from a file
-	public void loadPlayer(String inputFile) {
+	public void loadPlayer(String inputFile) throws FileNotFoundException, NumberFormatException, BadConfigFormatException {
 		computers =  new ArrayList<ComputerPlayer>();
-		System.out.println("NOT IMPLEMENTED");
+		FileReader reader = new FileReader(inputFile);
+		Scanner in = new Scanner(reader);
+		
+		while (in.hasNextLine()) {
+			String[] line = in.nextLine().split("\\, ");
+			if(line[0].contentEquals("H")){
+
+				player = new HumanPlayer(line[1],line[2],Integer.parseInt(line[3]), this);
+			}else if(line[0].contentEquals("C")){
+				System.out.println();
+				ComputerPlayer tempComp = new ComputerPlayer(line[1],line[2],Integer.parseInt(line[3]), this);
+				computers.add(tempComp);
+				computers.get(computers.size()-1).setDeck(deck);
+			}
+		}
+			
+		in.close();
+		
 	}
 	
 	public void selectAnswer() {
 		System.out.println("NOT IMPLEMENTED");
 	}
 	
-	public void deal(ArrayList<String> cardList) {
-		System.out.println("NOT IMPLEMENTED");
-	}
-	
 	public void deal() {
-		System.out.println("NOT IMPLEMENTED");
+		//Deal Player Hand
+		ArrayList<Card> copyDeck = deck;
+		int randomIndex = generator.nextInt( copyDeck.size() );
+		while(player.getHand().size()<3){
+			if(!player.hasCardType(copyDeck.get(randomIndex).getCardType())){
+
+				player.addCardToHand(copyDeck.get(randomIndex));
+				copyDeck.remove(randomIndex);
+				randomIndex = generator.nextInt(copyDeck.size());
+			}
+			randomIndex = generator.nextInt(copyDeck.size());
+		}
+		System.out.println();
+
+			for(ComputerPlayer cPlayer:computers){
+				while(cPlayer.getHand().size()<3){
+					if(!cPlayer.hasCardType(copyDeck.get(randomIndex).getCardType())){
+
+						cPlayer.addCardToHand(copyDeck.get(randomIndex));
+						copyDeck.remove(randomIndex);
+						randomIndex = generator.nextInt(copyDeck.size());
+					}
+					randomIndex = generator.nextInt(copyDeck.size());
+				}	
+				System.out.println();
+			}
+			
 	}
-	
 	
 	
 	public boolean checkAccusation(String person, String room, String weapon) {
@@ -118,11 +179,11 @@ public class Board {
 					throw new BadConfigFormatException(inputFile);
 				}
 				if (x.equalsIgnoreCase("w")) {
-					WalkwayCell wCell = new WalkwayCell();
+					WalkwayCell wCell = new WalkwayCell(cells.size());
 					cells.add(wCell);
 					board[rows][cols] = wCell;
 				} else {
-					RoomCell rCell = new RoomCell(x + " ");
+					RoomCell rCell = new RoomCell(x + " ", cells.size());
 					cells.add(rCell);
 					board[rows][cols] = rCell;
 					
@@ -184,9 +245,9 @@ public class Board {
 		
 	}
 	
-	public RoomCell getRoomCellAt(int row, int col) {
+	public BoardCell getRoomCellAt(int row, int col) {
 
-		return (RoomCell) board[row+1][col+1];
+		return board[row+1][col+1];
 	}
 
 	//GETTERS
@@ -225,14 +286,14 @@ public class Board {
 				if(board[row][col].isRoom() && !board[row][col].isDoorWay()){
 					//Store the adjacencies and update position
 					adjMtx.put(position, list);
-					System.out.println("Adding Position Room" +position);
+
 					position++;
 					continue;
 				}
 				
 				//If the cell is a door then add only one adjacency according to the door direction
 				if (board[row][col].isDoorWay()) {
-					System.out.println("On doorway: "+row+" "+col);
+
 					tempRoom =(RoomCell) board[row][col];
 					if (tempRoom.getDoorDirection() == DoorDirection.UP)
 						list.add(grid[row-1][col]);
@@ -243,7 +304,7 @@ public class Board {
 					if (tempRoom.getDoorDirection() == DoorDirection.LEFT)
 						list.add(grid[row][col-1]);	
 					adjMtx.put(position, list);
-					System.out.println("Adding Position Room" +position);
+
 					position++;
 					continue;
 				} 
@@ -321,7 +382,7 @@ public class Board {
 				
 				//Store the adjacencies and update position
 				adjMtx.put(position, list);
-				System.out.println("Adding Position " +position);
+
 				position++;
 				
 				
@@ -363,6 +424,7 @@ public class Board {
 //		System.out.println("Start = "+ start);
 //		System.out.println("Rows: "+ numRows + " Cols: "+numColumns);
 //		System.out.println(adjMtx.get(5));
+		calcAdjacencies();
 		for (int a = 0; a < adjMtx.get(start).size(); a++) {
 			if (steps == intSteps-1) {
 				setSeen(begin);
@@ -394,14 +456,14 @@ public class Board {
 		return targets;
 	}
 	
-	public static void main(String[] args) throws FileNotFoundException, BadConfigFormatException {
-		Board board = new Board();
-		
-		board.loadConfigFiles("clueboard.csv", "Legend.txt", "player.txt", "cards.txt");
-		System.out.println(board.numRows + ", " + board.numColumns);
-		board.calcAdjacencies();
-
-		
-		
-	}
+//	public static void main(String[] args) throws FileNotFoundException, BadConfigFormatException {
+//		Board board = new Board();
+//		
+//		board.loadConfigFiles("clueboard.csv", "Legend.txt", "player.txt", "cards.txt");
+//		System.out.println(board.numRows + ", " + board.numColumns);
+//		board.calcAdjacencies();
+//
+//		
+//		
+//	}
 }
