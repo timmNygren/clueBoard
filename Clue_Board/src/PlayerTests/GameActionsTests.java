@@ -353,7 +353,7 @@ public class GameActionsTests {
 		computer.show(majicard);
 		System.out.println("Seen size after:" + computer.getSeenCards().size());
 
-		System.out.println("------------------------------DICKS----------------------------------");
+		System.out.println("----------------------------------------------------------------");
 		computerSuggestion = computer.createSuggestion((RoomCell)board.getCellAt(computer.getLocation()));
 		System.out.println("Person:" + computerSuggestion==null);
 		

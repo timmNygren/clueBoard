@@ -57,20 +57,20 @@ public class BoardInitTests {
 	@Test
 	public void FourDoorDirections() {
 		// Test one each RIGHT/LEFT/UP/DOWN
-		RoomCell room = board.getRoomCellAt(4, 3);
+		RoomCell room = (RoomCell) board.getRoomCellAt(4, 3);
 		assertTrue(room.isDoorWay());
 		assertEquals(RoomCell.DoorDirection.RIGHT, room.getDoorDirection());
-		room = board.getRoomCellAt(4, 8);
+		room = (RoomCell) board.getRoomCellAt(4, 8);
 		assertTrue(room.isDoorWay());
 		assertEquals(RoomCell.DoorDirection.DOWN, room.getDoorDirection());
-		room = board.getRoomCellAt(15, 18);
+		room = (RoomCell) board.getRoomCellAt(15, 18);
 		assertTrue(room.isDoorWay());
 		assertEquals(RoomCell.DoorDirection.LEFT, room.getDoorDirection());
-		room = board.getRoomCellAt(14, 11);
+		room = (RoomCell) board.getRoomCellAt(14, 11);
 		assertTrue(room.isDoorWay());
 		assertEquals(RoomCell.DoorDirection.UP, room.getDoorDirection());
 		// Test that room pieces that aren't doors know it
-		room = board.getRoomCellAt(0, 0);
+		room = (RoomCell) board.getRoomCellAt(0, 0);
 		assertFalse(room.isDoorWay());	
 		// Test that walkways are not doors
 		BoardCell cell = board.getCellAt(board.calcIndex(0, 6));
@@ -111,10 +111,10 @@ public class BoardInitTests {
 	// correct.
 	@Test
 	public void testRoomInitials() {
-		assertEquals('C', board.getRoomCellAt(0, 0).getInitial());
-		assertEquals('R', board.getRoomCellAt(4, 8).getInitial());
-		assertEquals('B', board.getRoomCellAt(9, 0).getInitial());
-		assertEquals('O', board.getRoomCellAt(21, 22).getInitial());
-		assertEquals('K', board.getRoomCellAt(21, 0).getInitial());
+		assertEquals('C', ((RoomCell) board.getRoomCellAt(0, 0)).getInitial());
+		assertEquals('R', ((RoomCell) board.getRoomCellAt(4, 8)).getInitial());
+		assertEquals('B', ((RoomCell) board.getRoomCellAt(9, 0)).getInitial());
+		assertEquals('O', ((RoomCell) board.getRoomCellAt(21, 22)).getInitial());
+		assertEquals('K', ((RoomCell) board.getRoomCellAt(21, 0)).getInitial());
 	}
 }

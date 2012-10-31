@@ -60,23 +60,23 @@ public class clueTests {
 
 	@Test
 	public void testDoorDirections() {
-		RoomCell room = board.getRoomCellAt(4, 3);
+		RoomCell room = (RoomCell) board.getRoomCellAt(4, 3);
 		assertTrue(room.isDoorWay());		
 		assertEquals(RoomCell.DoorDirection.RIGHT, room.getDoorDirection());
 		
-		room = board.getRoomCellAt(4, 8);
+		room = (RoomCell) board.getRoomCellAt(4, 8);
 		assertTrue(room.isDoorWay());		
 		assertEquals(RoomCell.DoorDirection.DOWN, room.getDoorDirection());
 		
-		room = board.getRoomCellAt(10, 1);
+		room = (RoomCell) board.getRoomCellAt(10, 1);
 		assertTrue(room.isDoorWay());		
 		assertEquals(RoomCell.DoorDirection.LEFT, room.getDoorDirection());
 		
-		room = board.getRoomCellAt(15, 1);
+		room = (RoomCell) board.getRoomCellAt(15, 1);
 		assertTrue(room.isDoorWay());			
 		assertEquals(RoomCell.DoorDirection.UP, room.getDoorDirection());	
 		
-		room = board.getRoomCellAt(2 , 2);		
+		room = (RoomCell) board.getRoomCellAt(2 , 2);		
 		assertFalse(room.isDoorWay());
 			
 
@@ -84,16 +84,16 @@ public class clueTests {
 
 	@Test
 	public void testRoomInitials() {
-		assertEquals('C', board.getRoomCellAt(10, 2).getInitial());
-		assertEquals('R', board.getRoomCellAt(14, 20).getInitial());
-		assertEquals('B', board.getRoomCellAt(18, 3).getInitial());
-		assertEquals('O', board.getRoomCellAt(11, 9).getInitial());
-		assertEquals('K', board.getRoomCellAt(3, 10).getInitial());
-		assertEquals('D', board.getRoomCellAt(7, 17).getInitial());
-		assertEquals('L', board.getRoomCellAt(3, 2).getInitial());
-		assertEquals('S', board.getRoomCellAt(19, 17).getInitial());
-		assertEquals('H', board.getRoomCellAt(2, 20).getInitial());
-		assertEquals('X', board.getRoomCellAt(19, 10).getInitial());
+		assertEquals('C', ((RoomCell) board.getRoomCellAt(10, 2)).getInitial());
+		assertEquals('R', ((RoomCell) board.getRoomCellAt(14, 20)).getInitial());
+		assertEquals('B', ((RoomCell) board.getRoomCellAt(18, 3)).getInitial());
+		assertEquals('O', ((RoomCell) board.getRoomCellAt(11, 9)).getInitial());
+		assertEquals('K', ((RoomCell) board.getRoomCellAt(3, 10)).getInitial());
+		assertEquals('D', ((RoomCell) board.getRoomCellAt(7, 17)).getInitial());
+		assertEquals('L', ((RoomCell) board.getRoomCellAt(3, 2)).getInitial());
+		assertEquals('S', ((RoomCell) board.getRoomCellAt(19, 17)).getInitial());
+		assertEquals('H', ((RoomCell) board.getRoomCellAt(2, 20)).getInitial());
+		assertEquals('X', ((RoomCell) board.getRoomCellAt(19, 10)).getInitial());
 	}
 	
 	@Test
